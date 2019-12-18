@@ -5,6 +5,10 @@ final class SwiftDiceTests: XCTestCase {
     static var allTests = [
         ("testDie", testDie),
         ("testRoll", testRoll),
+        ("testAddition", testAddition),
+        ("testSubtraction", testSubtraction),
+        ("testMultiplication", testMultiplication),
+        ("testDivision", testDivision),
     ]
 }
 extension SwiftDiceTests {
@@ -37,5 +41,61 @@ extension SwiftDiceTests {
         }
         XCTAssertGreaterThanOrEqual(results.total, 3)
         XCTAssertLessThanOrEqual(results.total, 18)
+    }
+    func testAddition() {
+        let results = DiceExpressions.add(.die(try! Die("3d6")), .value(10)).roll()
+        XCTAssertEqual(results.results.count, 4)
+        for result in results.results {
+            if result.sides != 0 {
+                XCTAssertGreaterThanOrEqual(result.value, 1)
+                XCTAssertLessThanOrEqual(result.value, 6)
+            } else {
+                XCTAssertEqual(result.value, 10)
+            }
+        }
+        XCTAssertGreaterThanOrEqual(results.total, 15)
+        XCTAssertLessThanOrEqual(results.total, 28)
+    }
+    func testSubtraction() {
+        let results = DiceExpressions.subtract(.die(try! Die("3d6")), .value(10)).roll()
+        XCTAssertEqual(results.results.count, 4)
+        for result in results.results {
+            if result.sides != 0 {
+                XCTAssertGreaterThanOrEqual(result.value, 1)
+                XCTAssertLessThanOrEqual(result.value, 6)
+            } else {
+                XCTAssertEqual(result.value, 10)
+            }
+        }
+        XCTAssertGreaterThanOrEqual(results.total, -6)
+        XCTAssertLessThanOrEqual(results.total, 8)
+    }
+    func testMultiplication() {
+        let results = DiceExpressions.multiply(.die(try! Die("3d6")), .value(10)).roll()
+        XCTAssertEqual(results.results.count, 4)
+        for result in results.results {
+            if result.sides != 0 {
+                XCTAssertGreaterThanOrEqual(result.value, 1)
+                XCTAssertLessThanOrEqual(result.value, 6)
+            } else {
+                XCTAssertEqual(result.value, 10)
+            }
+        }
+        XCTAssertGreaterThanOrEqual(results.total, 30)
+        XCTAssertLessThanOrEqual(results.total, 180)
+    }
+    func testDivision() {
+        let results = DiceExpressions.devide(.die(try! Die("3d6")), .value(10)).roll()
+        XCTAssertEqual(results.results.count, 4)
+        for result in results.results {
+            if result.sides != 0 {
+                XCTAssertGreaterThanOrEqual(result.value, 1)
+                XCTAssertLessThanOrEqual(result.value, 6)
+            } else {
+                XCTAssertEqual(result.value, 10)
+            }
+        }
+        XCTAssertGreaterThanOrEqual(results.total, 0)
+        XCTAssertLessThanOrEqual(results.total, 2)
     }
 }
