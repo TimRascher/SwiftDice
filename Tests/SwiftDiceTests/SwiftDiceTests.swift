@@ -43,7 +43,7 @@ extension SwiftDiceTests {
         XCTAssertLessThanOrEqual(results.total, 18)
     }
     func testAddition() {
-        let results = DiceExpressions.add(.die(try! Die("3d6")), .value(10)).roll()
+        let results = DiceExpressions.add(.die(try! Die("3d6")), .number(10)).roll()
         XCTAssertEqual(results.results.count, 4)
         for result in results.results {
             if result.sides != 0 {
@@ -57,7 +57,7 @@ extension SwiftDiceTests {
         XCTAssertLessThanOrEqual(results.total, 28)
     }
     func testSubtraction() {
-        let results = DiceExpressions.subtract(.die(try! Die("3d6")), .value(10)).roll()
+        let results = DiceExpressions.subtract(.die(try! Die("3d6")), .number(10)).roll()
         XCTAssertEqual(results.results.count, 4)
         for result in results.results {
             if result.sides != 0 {
@@ -71,7 +71,7 @@ extension SwiftDiceTests {
         XCTAssertLessThanOrEqual(results.total, 8)
     }
     func testMultiplication() {
-        let results = DiceExpressions.multiply(.die(try! Die("3d6")), .value(10)).roll()
+        let results = DiceExpressions.multiply(.die(try! Die("3d6")), .number(10)).roll()
         XCTAssertEqual(results.results.count, 4)
         for result in results.results {
             if result.sides != 0 {
@@ -85,7 +85,7 @@ extension SwiftDiceTests {
         XCTAssertLessThanOrEqual(results.total, 180)
     }
     func testDivision() {
-        let results = DiceExpressions.devide(.die(try! Die("3d6")), .value(10)).roll()
+        let results = DiceExpressions.devide(.die(try! Die("3d6")), .number(10)).roll()
         XCTAssertEqual(results.results.count, 4)
         for result in results.results {
             if result.sides != 0 {
@@ -97,5 +97,9 @@ extension SwiftDiceTests {
         }
         XCTAssertGreaterThanOrEqual(results.total, 0)
         XCTAssertLessThanOrEqual(results.total, 2)
+    }
+    func testExpression() {
+        let expression = try? DiceExpressions("(3d6 - 10) * 10")
+        let results = expression?.roll()
     }
 }

@@ -8,4 +8,8 @@ import Foundation
 public enum SwiftDiceErrors: Error, Equatable {
     case unableToConvertToDie(String)
     case valuesCannotBeNegitive(Int, Int)
+    case unableToEvaluateExpression(String)
+    case noInstructionsFound
+    case notAValidInstruction(String)
+    case invalidSyntax
 }
