@@ -22,7 +22,7 @@ extension SwiftDiceTests {
             XCTAssertEqual(error as! SwiftDiceErrors, SwiftDiceErrors.unableToConvertToDie("blamo"))
         }
         XCTAssertThrowsError(try Die("These Dice Are Neat!")) { (error) in
-            XCTAssertEqual(error as! SwiftDiceErrors, SwiftDiceErrors.unableToConvertToDie("These Dice Are Neat!"))
+            XCTAssertEqual(error as! SwiftDiceErrors, SwiftDiceErrors.unableToConvertToDie("These Dice Are Neat"))
         }
         XCTAssertThrowsError(try Die(amount: -1, sides: 6)) { (error) in
             XCTAssertEqual(error as! SwiftDiceErrors, SwiftDiceErrors.valuesCannotBeNegitive(-1, 6))
@@ -63,6 +63,16 @@ extension SwiftDiceTests {
         let expression = try? DiceExpressions("d10")
         let results = expression?.roll()
         XCTAssert(check(results, in: 1...10, numberOfDice: 1, diceRange: 1...10))
+    }
+    func testFlagCodable() {
+        let flag = DieFlags.keep(10)
+        guard let json = try? JSONEncoder().encode(flag), let string = String(data: json, encoding: .utf8) else {
+            XCTAssert(false)
+            return
+        }
+        print(string)
+        let fromJSON = try? JSONDecoder().decode(DieFlags.self, from: json)
+        XCTAssertEqual(fromJSON, DieFlags.keep(10))
     }
 }
 extension SwiftDiceTests {
