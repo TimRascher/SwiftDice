@@ -14,11 +14,14 @@ public struct Die {
         self.sides = 6
         self.flags = Set<DieFlags>()
     }
-    public init(amount: Int, sides: Int, flags: [DieFlags] = [DieFlags]()) throws {
+    public init(amount: Int, sides: Int, flags: [DieFlags]) throws {
+        self = try Die(amount: amount, sides: sides, flags: Set(flags))
+    }
+    public init(amount: Int, sides: Int, flags: Set<DieFlags> = Set<DieFlags>()) throws {
         guard amount > 0, sides > 0 else { throw SwiftDiceErrors.valuesCannotBeNegitive(amount, sides) }
         self.amount = amount
         self.sides = sides
-        self.flags = Set(flags)
+        self.flags = flags
     }
 }
 extension Die: Equatable { }
@@ -27,12 +30,13 @@ extension Die: Codable { }
 public extension Die {
     init(_ string: String) throws {
         let explosionTest = Self.checkForExplosion(string)
-        if explosionTest.1 {  }
+        var flags = Set<DieFlags>()
+        if explosionTest.1 { flags.insert(.explode) }
         let parts = explosionTest.0.split(separator: "d")
         if (1...2).contains(parts.count) == false { throw SwiftDiceErrors.unableToConvertToDie(string) }
         let amount = parts.count == 2 ? try Int(from: parts[0]) : 1
         let sides = parts.count == 2 ? try Int(from: parts[1]) : try Int(from: parts[0])
-        self = try Die(amount: amount, sides: sides)
+        self = try Die(amount: amount, sides: sides, flags: flags)
     }
 }
 private extension Die {

@@ -13,4 +13,5 @@ public enum SwiftDiceErrors: Error, Equatable {
     case notAValidInstruction(String)
     case invalidSyntax
     case wrongNumberOfFlags(Int)
+    case wrongNumberOfExpressions(Int)
 }

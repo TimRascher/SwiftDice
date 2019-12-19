@@ -35,6 +35,8 @@ public extension DiceExpressions {
         self = expression
     }
 }
+extension DiceExpressions: Hashable {}
+extension DiceExpressions: Equatable {}
 extension DiceExpressions {
     enum Instructions {
         case add
@@ -156,5 +158,67 @@ private extension Array where Element == DiceExpressions.Parts {
             return false
         }
         return instructions.count > 0
+    }
+}
+
+private extension DiceExpressions {
+    enum CodingKeys: CodingKey {
+        case add
+        case devide
+        case die
+        case multiply
+        case number
+        case subtract
+    }
+    struct ExpressionHolder: Codable {
+        let lhs: DiceExpressions
+        let rhs: DiceExpressions
+        init(_ lhs: DiceExpressions, _ rhs: DiceExpressions) {
+            self.lhs = lhs
+            self.rhs = rhs
+        }
+    }
+}
+extension DiceExpressions: Decodable {
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        if container.allKeys.count != 1 { throw SwiftDiceErrors.wrongNumberOfExpressions(container.allKeys.count) }
+        func holder(_ key: CodingKeys) throws -> ExpressionHolder { try container.decode(ExpressionHolder.self, forKey: key) }
+        switch container.allKeys[0] {
+        case .add:
+            let value = try holder(.add)
+            self = .add(value.lhs, value.rhs)
+        case .devide:
+            let value = try holder(.devide)
+            self = .devide(value.lhs, value.rhs)
+        case .die:
+            let die = try container.decode(Die.self, forKey: .die)
+            self = .die(die)
+        case .multiply:
+            let value = try holder(.multiply)
+            self = .multiply(value.lhs, value.rhs)
+        case .number:
+            let number = try container.decode(Int.self, forKey: .number)
+            self = .number(number)
+        case .subtract:
+            let value = try holder(.subtract)
+            self = .subtract(value.lhs, value.rhs)
+        }
+    }
+}
+extension DiceExpressions: Encodable {
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        func add(_ lhs: DiceExpressions, _ rhs: DiceExpressions, _ key: CodingKeys) throws {
+            try container.encode(ExpressionHolder(lhs, rhs), forKey: key)
+        }
+        switch self {
+        case .add(let lhs, let rhs): try add(lhs, rhs, .add)
+        case .devide(let lhs, let rhs): try add(lhs, rhs, .devide)
+        case .die(let die): try container.encode(die, forKey: .die)
+        case .multiply(let lhs, let rhs): try add(lhs, rhs, .multiply)
+        case .number(let number): try container.encode(number, forKey: .number)
+        case .subtract(let lhs, let rhs): try add(lhs, rhs, .subtract)
+        }
     }
 }

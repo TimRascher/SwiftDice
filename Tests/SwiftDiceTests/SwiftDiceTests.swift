@@ -11,6 +11,8 @@ final class SwiftDiceTests: XCTestCase {
         ("testDivision", testDivision),
         ("testExpression", testExpression),
         ("testNotationWithOptionalDiceAmount", testNotationWithOptionalDiceAmount),
+        ("testFlagCodable", testFlagCodable),
+        ("testExpressionCodable", testExpressionCodable),
     ]
 }
 extension SwiftDiceTests {
@@ -73,6 +75,16 @@ extension SwiftDiceTests {
         print(string)
         let fromJSON = try? JSONDecoder().decode(DieFlags.self, from: json)
         XCTAssertEqual(fromJSON, DieFlags.keep(10))
+    }
+    func testExpressionCodable() {
+        let expression = try! DiceExpressions("(2d10! + 10) * 10")
+        guard let json = try? JSONEncoder().encode(expression), let string = String(data: json, encoding: .utf8) else {
+            XCTAssert(false)
+            return
+        }
+        print(string)
+        let fromJSON = try! JSONDecoder().decode(DiceExpressions.self, from: json)
+        XCTAssertEqual(fromJSON, expression)
     }
 }
 extension SwiftDiceTests {
