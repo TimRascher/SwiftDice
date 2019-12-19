@@ -60,6 +60,14 @@ private extension Int {
 // MARK: - String Extension
 public extension String {
     init(_ die: Die) {
-        self = "\(die.amount)d\(die.sides)"
+        var string = "\(die.amount)d\(die.sides)"
+        for flag in die.flags {
+            switch flag {
+            case .explode: string += "!"
+            case .keep(let value): string += "k\(value)"
+            case .fate: string = string.replacingOccurrences(of: "d", with: "f")
+            }
+        }
+        self = string
     }
 }
