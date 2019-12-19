@@ -38,7 +38,7 @@ public struct DieRoll: Roll {
         self.total = total
     }
     public init(_ value: Int) {
-        results = [RollResult(sides: 0, value: value)]
+        results = [RollResult]()
         total = value
     }
     public init(_ die: Die) {
