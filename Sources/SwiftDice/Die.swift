@@ -24,10 +24,16 @@ extension Die: Codable { }
 public extension Die {
     init(_ string: String) throws {
         let parts = string.split(separator: "d")
-        if parts.count != 2 { throw SwiftDiceErrors.unableToConvertToDie(string) }
-        guard let amount = Int(parts[0]), amount > 0 else { throw SwiftDiceErrors.unableToConvertToDie(string) }
-        guard let sides = Int(parts[1]), sides > 0 else { throw SwiftDiceErrors.unableToConvertToDie(string) }
+        if (1...2).contains(parts.count) == false { throw SwiftDiceErrors.unableToConvertToDie(string) }
+        let amount = parts.count == 2 ? try Int(from: parts[0]) : 1
+        let sides = parts.count == 2 ? try Int(from: parts[1]) : try Int(from: parts[0])
         self = try Die(amount: amount, sides: sides)
+    }
+}
+private extension Int {
+    init(from part: String.SubSequence) throws {
+        guard let int = Int(part) else { throw SwiftDiceErrors.unableToConvertToDie(String(part)) }
+        self = int
     }
 }
 

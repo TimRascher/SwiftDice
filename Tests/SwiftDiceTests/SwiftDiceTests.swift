@@ -9,6 +9,8 @@ final class SwiftDiceTests: XCTestCase {
         ("testSubtraction", testSubtraction),
         ("testMultiplication", testMultiplication),
         ("testDivision", testDivision),
+        ("testExpression", testExpression),
+        ("testNotationWithOptionalDiceAmount", testNotationWithOptionalDiceAmount),
     ]
 }
 extension SwiftDiceTests {
@@ -56,6 +58,11 @@ extension SwiftDiceTests {
         let expression = try? DiceExpressions("(2d10 + 10) * 10")
         let results = expression?.roll()
         XCTAssert(check(results, in: 120...300, numberOfDice: 2, diceRange: 1...10))
+    }
+    func testNotationWithOptionalDiceAmount() {
+        let expression = try? DiceExpressions("d10")
+        let results = expression?.roll()
+        XCTAssert(check(results, in: 1...10, numberOfDice: 1, diceRange: 1...10))
     }
 }
 extension SwiftDiceTests {
